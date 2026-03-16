@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To the LOML ♡</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:       #FFC0CB;
+      --pink-deep:  #e8a0ad;
+      --pink-pale:  #fff0f3;
+      --pink-mid:   #f9d4da;
+      --pink-dark:  #9c5e68;
+      --pink-text:  #7a3d4a;
+      --white:      #fffafb;
+      --off:        #f5e8ea;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--pink);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── subtle grain texture ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-size: 160px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ── soft floating petals (not hearts — minimal SVG dots) ── */
+    .petals {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      bottom: -30px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.55);
+      opacity: 0;
+      animation: drift linear infinite;
+    }
+    .petal:nth-child(1)  { left:8%;   width:4px;  height:4px;  animation-duration:14s; animation-delay:0s;   }
+    .petal:nth-child(2)  { left:20%;  width:7px;  height:7px;  animation-duration:18s; animation-delay:2s;   }
+    .petal:nth-child(3)  { left:35%;  width:3px;  height:3px;  animation-duration:12s; animation-delay:5s;   }
+    .petal:nth-child(4)  { left:50%;  width:5px;  height:5px;  animation-duration:16s; animation-delay:1s;   }
+    .petal:nth-child(5)  { left:65%;  width:4px;  height:4px;  animation-duration:20s; animation-delay:7s;   }
+    .petal:nth-child(6)  { left:78%;  width:6px;  height:6px;  animation-duration:15s; animation-delay:3s;   }
+    .petal:nth-child(7)  { left:88%;  width:3px;  height:3px;  animation-duration:11s; animation-delay:9s;   }
+    .petal:nth-child(8)  { left:42%;  width:5px;  height:5px;  animation-duration:17s; animation-delay:4s;   }
+    @keyframes drift {
+      0%   { transform: translateY(0) translateX(0);   opacity: 0; }
+      8%   { opacity: 0.7; }
+      85%  { opacity: 0.3; }
+      100% { transform: translateY(-105vh) translateX(20px); opacity: 0; }
+    }
+
+    /* ── page ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px 72px;
+      gap: 24px;
+    }
+
+    /* ── title ── */
+    .title-wrap { text-align: center; }
+
+    .title-wrap h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(2.4rem, 8vw, 4.6rem);
+      color: var(--white);
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      text-shadow: 0 2px 24px rgba(140,60,80,0.18);
+    }
+
+    .heart-icon {
+      display: inline-block;
+      font-style: normal;
+      animation: softPulse 3s ease-in-out infinite;
+    }
+    @keyframes softPulse {
+      0%,100% { opacity: 1;   transform: scale(1); }
+      50%      { opacity: 0.7; transform: scale(1.15); }
+    }
+
+    .title-wrap p {
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(255,255,255,0.65);
+      font-size: 0.88rem;
+      margin-top: 8px;
+      letter-spacing: 0.06em;
+    }
+
+    /* thin decorative line under title */
+    .title-line {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.4);
+      margin: 12px auto 0;
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: min(320px, 86vw);
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow:
+        0 8px 48px rgba(140,60,80,0.18),
+        0 1px 0 rgba(255,255,255,0.8) inset;
+      overflow: visible;
+      position: relative;
+      padding-bottom: 22px;
+    }
+
+    /* minimal top tag — just a thin line + text, no emoji clutter */
+    .card-tag {
+      position: absolute;
+      top: -11px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--pink-pale);
+      color: var(--pink-dark);
+      font-family: 'Caveat', cursive;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      padding: 2px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(200,140,150,0.3);
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    /* ── PHOTO STRIP ── */
+    .photo-strip-wrap {
+      border-radius: 16px 16px 0 0;
+      overflow: hidden;
+      height: 248px;
+      position: relative;
+      background: var(--pink-mid);
+    }
+    /* side fades */
+    .photo-strip-wrap::before,
+    .photo-strip-wrap::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0;
+      width: 40px; z-index: 2; pointer-events: none;
+    }
+    .photo-strip-wrap::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(255,250,251,0.5), transparent);
+    }
+    .photo-strip-wrap::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(255,250,251,0.5), transparent);
+    }
+
+    .photo-strip {
+      display: flex;
+      width: max-content;
+      height: 100%;
+      animation: slide 18s linear infinite;
+    }
+    .photo-strip:hover { animation-play-state: paused; }
+    @keyframes slide {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .photo-slide {
+      width: min(320px, 86vw);
+      height: 248px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-slide .ph {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #fce4ea, #f9c8d2);
+    }
+    .photo-slide .ph .ph-icon { font-size: 2.4rem; opacity: 0.5; }
+    .photo-slide .ph span {
+      font-family: 'Caveat', cursive;
+      font-size: 0.82rem;
+      color: var(--pink-dark);
+      opacity: 0.55;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── card body ── */
+    .card-body {
+      padding: 16px 20px 0;
+      text-align: center;
+    }
+    .card-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--pink-text);
+      letter-spacing: 0.04em;
+    }
+    .card-sublabel {
+      font-size: 0.7rem;
+      font-style: italic;
+      color: var(--pink-deep);
+      margin-top: 4px;
+      letter-spacing: 0.08em;
+      opacity: 0.8;
+    }
+
+    /* ── GRAMOPHONE ── */
+    .gram-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 14px;
+      padding-bottom: 2px;
+    }
+    .gram-svg {
+      width: 92px; height: 92px;
+      cursor: pointer;
+      filter: drop-shadow(0 3px 12px rgba(160,80,100,0.22));
+      transition: transform 0.2s ease, filter 0.2s ease;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .gram-svg:hover {
+      filter: drop-shadow(0 5px 18px rgba(160,80,100,0.38));
+      transform: scale(1.05);
+    }
+    .gram-svg:active { transform: scale(0.95); }
+
+    .gram-needle {
+      transform-origin: 58px 50px;
+    }
+    .gram-svg.playing .gram-needle {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* hint text */
+    .hold-hint {
+      font-family: 'Caveat', cursive;
+      font-size: 0.82rem;
+      color: var(--pink-deep);
+      text-align: center;
+      margin-top: 6px;
+      letter-spacing: 0.06em;
+      opacity: 0.7;
+      animation: fadeInOut 3s ease-in-out infinite;
+      transition: opacity 0.3s;
+    }
+    .hold-hint.hidden { opacity: 0 !important; pointer-events: none; }
+    @keyframes fadeInOut {
+      0%,100% { opacity: 0.45; }
+      50%      { opacity: 0.85; }
+    }
+
+    /* ── NOW PLAYING bar ── */
+    .now-playing {
+      width: min(320px, 86vw);
+      background: rgba(255,250,251,0.92);
+      border: 1px solid rgba(200,150,160,0.25);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(160,80,100,0.12);
+      transform: translateY(12px);
+      opacity: 0;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      pointer-events: none;
+    }
+    .now-playing.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .np-label { flex: 1; }
+    .np-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--pink-text);
+    }
+    .np-status {
+      font-size: 0.66rem;
+      font-style: italic;
+      color: var(--pink-deep);
+      margin-top: 2px;
+      letter-spacing: 0.05em;
+      opacity: 0.75;
+    }
+
+    /* minimal wave bars */
+    .wave-mini {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 22px;
+    }
+    .wb {
+      width: 2.5px;
+      border-radius: 2px;
+      background: var(--pink-deep);
+      height: 4px;
+      opacity: 0.6;
+    }
+    .wave-mini.playing .wb { animation: wp 0.55s ease-in-out infinite; }
+    .wave-mini.playing .wb:nth-child(1)  { animation-delay:0.00s; }
+    .wave-mini.playing .wb:nth-child(2)  { animation-delay:0.09s; }
+    .wave-mini.playing .wb:nth-child(3)  { animation-delay:0.18s; }
+    .wave-mini.playing .wb:nth-child(4)  { animation-delay:0.05s; }
+    .wave-mini.playing .wb:nth-child(5)  { animation-delay:0.13s; }
+    .wave-mini.playing .wb:nth-child(6)  { animation-delay:0.22s; }
+    .wave-mini.playing .wb:nth-child(7)  { animation-delay:0.08s; }
+    .wave-mini.playing .wb:nth-child(8)  { animation-delay:0.17s; }
+    @keyframes wp {
+      0%,100% { height: 3px;  opacity: 0.4; }
+      50%      { height: 18px; opacity: 0.9; }
+    }
+
+    .np-stop {
+      width: 28px; height: 28px;
+      background: var(--pink-mid);
+      border: 1px solid rgba(200,140,150,0.35);
+      border-radius: 50%;
+      color: var(--pink-dark);
+      font-size: 0.65rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .np-stop:hover { background: var(--pink-mid); transform: scale(1.1); }
+
+    /* ── canvas wave ── */
+    #waveCanvas {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      width: 100%; height: 60px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s;
+      z-index: 10;
+    }
+    #waveCanvas.visible { opacity: 1; }
+
+    /* thin dashed aesthetic frame */
+    .frame {
+      position: fixed; inset: 14px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 22px;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="frame"></div>
+
+<div class="petals">
+  <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  <div class="petal"></div><div class="petal"></div>
+</div>
+
+<div class="page">
+
+  <!-- TITLE -->
+  <div class="title-wrap">
+    <h1><em>To the LOML</em> <span class="heart-icon">♡</span></h1>
+    <div class="title-line"></div>
+    <p>touch the gramophone to hear my heart</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+    <div class="card-tag">for you, always</div>
+
+    <!-- PHOTOS INSIDE CARD sliding right → left -->
+    <div class="photo-strip-wrap">
+      <div class="photo-strip">
+
+        <!-- real slides -->
+        <div class="photo-slide">
+          <img src="images/photo1.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo1.jpeg</span>
+          </div>
+        </div>
+        <div class="photo-slide">
+          <img src="images/photo2.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo2.jpeg</span>
+          </div>
+        </div>
+        <div class="photo-slide">
+          <img src="images/photo3.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo3.jpeg</span>
+          </div>
+        </div>
+        <div class="photo-slide">
+          <img src="images/photo4.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo4.jpeg</span>
+          </div>
+        </div>
+
+        <!-- clones for seamless loop -->
+        <div class="photo-slide">
+          <img src="images/photo1.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo1.jpeg</span>
+          </div>
+        </div>
+        <div class="photo-slide">
+          <img src="images/photo2.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo2.jpeg</span>
+          </div>
+        </div>
+        <div class="photo-slide">
+          <img src="images/photo3.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo3.jpeg</span>
+          </div>
+        </div>
+        <div class="photo-slide">
+          <img src="images/photo4.jpeg" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="ph" style="display:none">
+            <div class="ph-icon">🌸</div><span>photo4.jpeg</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- card label -->
+    <div class="card-body">
+      <div class="card-label">Confession</div>
+      <div class="card-sublabel">touch &amp; hold to play</div>
+    </div>
+
+    <!-- GRAMOPHONE — centred, big -->
+    <div class="gram-wrap">
+      <svg class="gram-svg" id="gramSvg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- soft glow -->
+        <circle cx="58" cy="50" r="23" fill="rgba(255,192,203,0.15)"/>
+
+        <!-- Horn -->
+        <path d="M12 78 Q18 48 40 37 L47 53 Q30 58 28 84 Z"
+              fill="#fce4ea" stroke="#e8a0ad" stroke-width="1.4" stroke-linejoin="round"/>
+        <!-- horn sheen -->
+        <path d="M17 73 Q22 53 39 43" stroke="white" stroke-width="1"
+              opacity="0.5" stroke-linecap="round"/>
+        <!-- horn mouth -->
+        <ellipse cx="20" cy="81" rx="9.5" ry="5"
+                 fill="#f9d4da" stroke="#e8a0ad" stroke-width="1.1"/>
+
+        <!-- Disc outer -->
+        <circle cx="58" cy="50" r="20" fill="#fff8f9" stroke="#e8a0ad" stroke-width="1.6"/>
+        <!-- Disc rings -->
+        <circle cx="58" cy="50" r="14" fill="#fce4ea" stroke="#e8b8c0" stroke-width="0.7"/>
+        <circle cx="58" cy="50" r="8"  fill="#FFC0CB" stroke="#d98898" stroke-width="1"/>
+        <circle cx="58" cy="50" r="3"  fill="#fff8f9"/>
+        <!-- tiny heart -->
+        <text x="55.8" y="52.5" font-size="4" fill="#c97080" font-family="serif" opacity="0.9">♡</text>
+
+        <!-- NEEDLE (rotates when playing) -->
+        <g class="gram-needle">
+          <line x1="58" y1="50" x2="77" y2="31"
+                stroke="#c9a8b0" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="77" cy="31" r="3.2" fill="#e8d0d4" stroke="#c9a8b0" stroke-width="0.9"/>
+          <circle cx="77" cy="31" r="1.3" fill="white" opacity="0.85"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hold-hint" id="holdHint">hold to play ♩</div>
+
+  </div><!-- /card -->
+
+  <!-- NOW PLAYING -->
+  <div class="now-playing" id="nowPlaying">
+    <div class="np-label">
+      <div class="np-name">Confession</div>
+      <div class="np-status">playing for you~</div>
+    </div>
+    <div class="wave-mini" id="waveMini">
+      <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+      <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+      <div class="wb"></div><div class="wb"></div>
+    </div>
+    <button class="np-stop" id="stopBtn" title="stop">■</button>
+  </div>
+
+</div>
+
+<canvas id="waveCanvas"></canvas>
+<audio id="audioPlayer" src="audio/confession.mp3" preload="auto"></audio>
+
+<script>
+(function(){
+  const audio    = document.getElementById('audioPlayer');
+  const gramSvg  = document.getElementById('gramSvg');
+  const npBar    = document.getElementById('nowPlaying');
+  const waveMini = document.getElementById('waveMini');
+  const stopBtn  = document.getElementById('stopBtn');
+  const canvas   = document.getElementById('waveCanvas');
+  const holdHint = document.getElementById('holdHint');
+  const ctx2d    = canvas.getContext('2d');
+
+  let isPlaying = false;
+  let holdTimer = null;
+  let audioCtx  = null;
+  let analyser  = null;
+  let animFrame = null;
+
+  // Long-press threshold: 400ms feels natural on mobile
+  const HOLD_MS = 400;
+
+  function resize(){ canvas.width = window.innerWidth; canvas.height = 60; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function initAudio(){
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 128;
+    const src = audioCtx.createMediaElementSource(audio);
+    src.connect(analyser);
+    analyser.connect(audioCtx.destination);
+  }
+
+  function drawWave(){
+    animFrame = requestAnimationFrame(drawWave);
+    const W = canvas.width, H = canvas.height;
+    ctx2d.clearRect(0, 0, W, H);
+    if(!analyser) return;
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(buf);
+    const bw = W / buf.length;
+    buf.forEach((v, i) => {
+      const bh    = (v / 255) * H * 0.85;
+      const alpha = 0.15 + (v / 255) * 0.55;
+      ctx2d.fillStyle = `rgba(232,160,173,${alpha})`;
+      ctx2d.beginPath();
+      ctx2d.roundRect(i * bw, H - bh, bw - 1, bh, 2);
+      ctx2d.fill();
+    });
+  }
+
+  function startPlay(){
+    initAudio();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    audio.currentTime = 0;
+    audio.play().then(() => {
+      isPlaying = true;
+      gramSvg.classList.add('playing');
+      waveMini.classList.add('playing');
+      npBar.classList.add('visible');
+      canvas.classList.add('visible');
+      holdHint.classList.add('hidden');
+      cancelAnimationFrame(animFrame);
+      drawWave();
+    }).catch(() => {
+      alert('Could not play.\nCheck: audio/confession.mp3 exists and you\'re using Live Server.');
+    });
+  }
+
+  function stopPlay(){
+    audio.pause();
+    audio.currentTime = 0;
+    isPlaying = false;
+    gramSvg.classList.remove('playing');
+    waveMini.classList.remove('playing');
+    npBar.classList.remove('visible');
+    canvas.classList.remove('visible');
+    holdHint.classList.remove('hidden');
+    cancelAnimationFrame(animFrame);
+  }
+
+  // ── Press detection (works for both mouse on desktop & touch on phone) ──
+  function onPressStart(e){
+    e.preventDefault();
+    holdTimer = setTimeout(() => {
+      holdTimer = null;
+      if(!isPlaying) startPlay();
+    }, HOLD_MS);
+  }
+
+  function onPressEnd(){
+    if(holdTimer !== null){
+      // released before threshold = short tap, just a soft wiggle
+      clearTimeout(holdTimer);
+      holdTimer = null;
+      gramSvg.style.transform = 'scale(1.08) rotate(-6deg)';
+      setTimeout(() => { gramSvg.style.transform = ''; }, 220);
+    }
+  }
+
+  // Mouse (desktop)
+  gramSvg.addEventListener('mousedown',  onPressStart);
+  gramSvg.addEventListener('mouseup',    onPressEnd);
+  gramSvg.addEventListener('mouseleave', onPressEnd);
+
+  // Touch (phone) — this is what makes it work on mobile
+  gramSvg.addEventListener('touchstart',  onPressStart, { passive: false });
+  gramSvg.addEventListener('touchend',    onPressEnd);
+  gramSvg.addEventListener('touchcancel', onPressEnd);
+
+  stopBtn.addEventListener('click', stopPlay);
+  audio.addEventListener('ended', stopPlay);
+})();
+</script>
+</body>
+</html>
