@@ -605,7 +605,7 @@
       cancelAnimationFrame(animFrame);
       drawWave();
     }).catch(() => {
-      alert('Could not play.\nCheck: audio/confession.mp3 exists and you\'re using Live Server.');
+      console.error('playback failed');
     });
   }
 
